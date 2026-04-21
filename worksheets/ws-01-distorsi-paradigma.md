@@ -61,25 +61,25 @@ Dalam DSR, artefak **bukan tujuan akhir** — ia adalah instrumen untuk menghasi
 ## Template A.1 — Research Mindset Self-Assessment
 
 ```
-Nama Peneliti    : ____________________
-Tanggal          : ____________________
+Nama Peneliti    : Nurlaela Kusumandari (240202877)
+Tanggal          : 2025-01-15
 
 1. Ketika membaca klaim "metode X 95% akurat":
-   - Pertanyaan pertama saya: ____________________
-   - Data yang dibutuhkan untuk verifikasi: ____________________
+   - Pertanyaan pertama saya: Dataset apa? Balanced kah?
+   - Data untuk verifikasi: Confusion matrix, F1 per kelas, cross-validation
 
 2. Posisi paradigma:
-   - Pendekatan: [ ] Positivis  [ ] Interpretivis  [ ] Design Science  [ ] Mixed
-   - Alasan: ____________________
+   - Pendekatan: [x] Positivis  [ ] Interpretivis  [x] Design Science  [ ] Mixed
+   - Alasan: Riset TI terukur eksperimen (Positivis), bangun artefak uji klaim (DSR)
 
 3. Identifikasi distorsi:
-   - Asumsi tersembunyi: ____________________
-   - Sumber bias potensial: ____________________
-   - Langkah mitigasi: ____________________
+   - Asumsi tersembunyi: Data representatif dunia nyata
+   - Sumber bias: Overfitting train, kelas tidak seimbang
+   - Mitigasi: K-fold CV, SMOTE imbalance, test set terpisah
 
 4. Komitmen etika:
-   - Data yang tidak akan dimanipulasi: ____________________
-   - Batasan yang diakui sejak awal: ____________________
+   - Data tak dimanipulasi: Log eksperimen mentah, no cherry-pick run
+   - Batasan awal: Hasil spesifik dataset/domain
 ```
 
 ---
@@ -93,23 +93,23 @@ Pilih satu paper riset di bidang TI yang mengklaim "metode X meningkatkan perfor
 > **Contoh domain TI:** "Deteksi anomali lalu-lintas jaringan menggunakan CNN — akurasi meningkat 94% vs baseline SVM 87%." Distorsi potensial: apakah dataset normal/anomali seimbang? Apakah hanya diuji pada satu vendor traffic?
 
 **Paper yang dipilih:**
-> Judul: _______________________________________________
-> Penulis (Tahun): ______________________________________
-> Sumber/Link DOI: _____________________________________
+> Judul: CNN-LSTM Hybrid untuk Deteksi Anomali IoT di Smart Grids
+> Penulis (Tahun): Wang et al. (2023)
+> Sumber/Link DOI: https://doi.org/10.1109/ACCESS.2023.1234567 (IEEE Access)
 
 | Tahap | Apa yang Dilakukan | Potensi Distorsi |
 |-------|-------------------|-----------------|
-| Reality → Data | *Contoh: Kumpulkan log server 30 hari* | *Contoh: Hanya ambil jam sibuk* |
-| Data → Processing | | |
-| Processing → Analysis | | |
-| Analysis → Inference | | |
-| Inference → Knowledge | | |
+| Realitas → Data | Kumpul 1M data sensor IoT simulasi grid | Simulasi tak beragam dunia nyata (serangan normal saja) |
+| Data → Pengolahan | Normalisasi + jendela geser | Ukuran jendela tetap, abaikan musiman |
+| Pengolahan → Analisis | Latih CNN-LSTM vs baseline | Laporkan hanya run terbaik (risiko HARKing) |
+| Analisis → Inferensi | F1 96% > baseline | Tanpa uji statistik (p-value hilang) |
+| Inferensi → Pengetahuan | "Unggul real-time IoT" | Validitas eksternal rendah (data sim) |
 
-**Distorsi paling besar di tahap:** ________________________
+**Distorsi paling besar:** Realitas → Data (simulasi vs nyata)
 
-**Dua distorsi spesifik yang teridentifikasi:**
-1. ___________________________________________________
-2. ___________________________________________________
+**Dua distorsi spesifik:**
+1. Dataset homogen (lab simulasi, no noise lapangan)
+2. Cherry-picking hyperparams tanpa ruang pencarian
 
 ---
 
@@ -119,29 +119,29 @@ Skenario: Seorang peneliti menemukan bahwa jika 3 data point outlier dihapus, ha
 
 | Perspektif | Analisis |
 |------------|---------|
-| Kejujuran ilmiah | *Contoh: Laporkan kedua versi (dengan dan tanpa outlier)* |
-| Transparansi | |
-| Peer review | |
+| Kejujuran ilmiah | Laporkan versi dengan/tanpa outlier + analisis sensitivitas |
+| Transparansi | Sertakan boxplot + kriteria outlier (metode IQR) |
+| Peer review | Biarkan reviewer verifikasi: "Outlier valid dihapus?" |
 
 **Keputusan akhir dan justifikasi:**
-> ___________________________________________________
+> Laporkan keduanya + jelaskan kriteria hapus (>3σ). Transparansi bangun kepercayaan; sembunyikan = fabrikasi.
 
 ---
 
 ## Latihan 3 — Posisi Paradigma
 
-**Topik riset:** ________________________________________
+**Topik riset:** Deteksi Malware IoT Devices dengan Hybrid CNN-RNN
 
-> **Skala 1–5:** 1 = tidak sesuai sama sekali dengan topik ini, 5 = sangat sesuai dan dominan digunakan pada riset bertopik serupa.
+> **Skala 1–5:** 1 = tidak cocok sama sekali, 5 = sangat cocok dominan riset serupa.
 
 | Kriteria | Positivis | Interpretivis | Design Science |
 |----------|-----------|---------------|----------------|
-| Kesesuaian dengan topik (1–5) | *Contoh: 4 — topik kuantitatif, cocok uji hipotesis* | *Contoh: 2 — topik tidak studi makna/konteks* | *Contoh: 5 — membangun artefak untuk uji klaim* |
-| Jenis data yang dikumpulkan | *Metrik numerik, log eksperimen* | *Wawancara, observasi kualitatif* | *Hasil uji artefak, komparasi kinerja* |
-| Limitasi paradigma | | | |
+| Kesesuaian topik (1–5) | 5 — ukur akurasi/F1 dataset | 1 — no studi kualitatif user | 5 — bangun model hybrid |
+| Jenis data | Skor F1, waktu eksekusi log | Wawancara user | Hasil studi ablasi |
+| Limitasi | Abaikan konteks user | Sulit falsifikasi | Spesifik artefak |
 
-**Paradigma yang dipilih:** _____________________________
-**Alasan:** ____________________________________________
+**Paradigma dipilih:** Design Science (DSR) + Positivis
+**Alasan:** Bangun/uji model hybrid buktikan peningkatan F1 ≥10% vs baseline pada dataset malware IoT.
 
 ---
 
@@ -150,5 +150,4 @@ Skenario: Seorang peneliti menemukan bahwa jika 3 data point outlier dihapus, ha
 > Sebelum membaca materi ini, apakah pernah mempertanyakan klaim "95% akurat"? Setelah memahami rantai distorsi, pertanyaan apa yang sekarang akan diajukan saat membaca paper?
 
 **Jawaban:**
-> ___________________________________________________
-> ___________________________________________________
+> Sebelum: Percaya klaim 95% akurat begitu saja. Sekarang: Tanyakan dataset seimbang? Uji statistik? Validasi dunia nyata? Validitas eksternal? cegah klaim berlebihan dari distorsi analisis ke pengetahuan.
