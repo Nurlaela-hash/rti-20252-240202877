@@ -67,33 +67,33 @@ Masalah riset yang layak harus memenuhi 5 kriteria:
 PROBLEM STATEMENT BUILDER
 
 Domain & Konteks
-  Domain   : ____________________
-  Konteks  : ____________________
+  Domain   : Keamanan Siber IoT
+  Konteks  : Perangkat IoT resource-constrained (RAM <64KB) rentan malware
 
 System Context
-  Input       : ____________________
-  Process     : ____________________
-  Output      : ____________________
-  Outcome     : ____________________
-  Constraints : ____________________
-  Stakeholders: ____________________
+  Input       : Network traffic packets dari IoT devices
+  Process     : Hybrid CNN-RNN classification
+  Output      : Malware/benign label + confidence score
+  Outcome     : Real-time threat mitigation
+  Constraints : Low compute (edge devices), imbalanced data
+  Stakeholders: IoT manufacturers, cybersecurity firms, end-users
 
 Fenomena → Problem
-  Fenomena yang diamati             : ____________________
-  Gejala (symptom) yang terukur     : ____________________
-  Masalah yang didiagnosis          : ____________________
-  Masalah riset (researchable)      : ____________________
-  Variabel yang terukur             : ____________________
+  Fenomena yang diamati             : Lonjakan malware IoT attacks 300% (2023)
+  Gejala (symptom) yang terukur     : F1-score models existing <0.82 on IoT datasets
+  Masalah yang didiagnosis          : Feature extraction tidak capture temporal patterns
+  Masalah riset (researchable)      : Hybrid CNN-RNN vs baselines pada low-resource IoT malware
+  Variabel yang terukur             : F1-score, latency (ms), RAM usage (KB)
 
 Problem Quality Check
-  [ ] Clarity — Apakah satu orang membaca akan paham?
-  [ ] Measurability — Apakah ada metrik kuantitatif?
-  [ ] Relevance — Apakah penting untuk domain?
-  [ ] Testability — Apakah bisa gagal?
-  [ ] Impact — Apakah ada kontribusi jika terjawab?
+  [x] Clarity — Apakah satu orang membaca akan paham?
+  [x] Measurability — Apakah ada metrik kuantitatif?
+  [x] Relevance — Apakah penting untuk domain?
+  [x] Testability — Apakah bisa gagal?
+  [x] Impact — Apakah ada kontribusi jika terjawab?
 
 Problem Statement (1 paragraf):
-  ____________________
+  Dalam ekosistem IoT resource-constrained, deteksi malware existing gagal capture temporal behavior network traffic (F1<0.82), menyebabkan false negatives tinggi. Gap: belum ada hybrid CNN-RNN diuji pada datasets IoT real seperti IoT-23 dengan constraints RAM<64KB. Research problem: apakah hybrid model tingkatkan F1 ≥0.90 vs baselines tanpa tambah latency >20ms?
 ```
 
 ---
@@ -102,18 +102,18 @@ Problem Statement (1 paragraf):
 
 Pilih satu topik di bidang TI yang diminati. Transformasikan melalui 5 tahap Problem Formation Model.
 
-**Topik awal:** ________________________________________
+**Topik awal:** Keamanan IoT
 
 | Tahap | Hasil |
 |-------|-------|
-| Reality | *Contoh: Aplikasi e-commerce sering ditinggalkan saat checkout* |
-| Observed Issue (Symptom) | *Contoh: Bounce rate checkout 68%* |
-| Diagnosed Problem (Root Cause) | |
-| Researchable Problem | |
-| Measurable Variable | |
+| Realitas | Serangan malware IoT naik 300% tahun 2023 |
+| Gejala (Symptom) | F1 deteksi <0.82 pada dataset IoT (IoT-23) |
+| Masalah Diagnosis (Root) | Fitur statis tak tangkap pola temporal |
+| Masalah Riset | Hybrid CNN-RNN vs RF/SVM low-resource IoT |
+| Variabel Ukur | F1-score, latency inferensi (ms), RAM (KB) |
 
-**Apakah terjebak solution-first thinking?** [ ] Ya / [ ] Tidak
-> Jika ya, kembali ke tahap mana? ________________________
+**Terjebak solution-first?** [ ] Ya / [ ] Tidak
+> Tidak, mulai data lonjakan → spesifik gap terukur.
 
 ---
 
@@ -123,14 +123,14 @@ Gambarkan konteks sistem dari masalah riset di Latihan 1.
 
 | Komponen | Deskripsi |
 |----------|----------|
-| Input | *Contoh: Request HTTP dari browser pengguna* |
-| Process | |
-| Output | |
-| Outcome | |
-| Constraints | |
-| Stakeholders | |
+| Masukan | Paket jaringan IoT (pcap, dataset IoT-23) |
+| Proses | Preprocess → fitur spasial CNN → temporal RNN → klasifikasi |
+| Keluaran | Skor probabilitas malware (0-1) |
+| Hasil | Blokir traffic berbahaya <50ms |
+| Kendala | Edge: CPU 1GHz, RAM 64KB, no GPU |
+| Pemangku | Vendor IoT (Xiaomi), tim keamanan, konsumen |
 
-**Komponen mana yang paling relevan dengan masalah riset?** _______________
+**Komponen paling relevan:** Proses (model hybrid low-resource).
 
 ---
 
@@ -140,17 +140,16 @@ Evaluasi problem statement yang sudah dibuat menggunakan 5 kriteria.
 
 | Kriteria | Skor (1-5) | Justifikasi |
 |----------|-----------|-------------|
-| Clarity | *Contoh: 4 — cukup jelas tapi perlu spesifikasi dataset* | |
-| Measurability | | |
-| Relevance | | |
-| Testability | | |
-| Impact | | |
+| Kejelasan | 5 | Variabel/metrik/dataset spesifik |
+| Ukurable | 5 | F1/latensi/RAM angka |
+| Relevansi | 5 | Malware IoT krusial 2024 |
+| Testable | 5 | Gagal jika F1 tak naik |
+| Dampak | 4 | Deploy edge jika sukses |
 
-**Skor total:** _____ / 25
+**Skor total:** 24 / 25
 
-**Problem statement versi final (1 paragraf):**
-> ___________________________________________________
-> ___________________________________________________
+**Problem statement final (1 paragraf):**
+> Pada jaringan IoT RAM <64KB, model malware konvensional (RF/SVM) gagal tangkap pola temporal traffic (F1 <0.82 IoT-23), menyebab false negative tinggi & delay. Problem riset: hybrid CNN-RNN tingkatkan F1 ≥0.90, latency <20ms, RAM <60KB vs baseline, uji dataset IoT real.
 
 ---
 
@@ -159,5 +158,4 @@ Evaluasi problem statement yang sudah dibuat menggunakan 5 kriteria.
 > Bandingkan "masalah" yang biasa ditemui saat coding (bug, error) dengan masalah riset. Apa perbedaan fundamental dalam cara mendefinisikan dan mendekati keduanya?
 
 **Jawaban:**
-> ___________________________________________________
-> ___________________________________________________
+> Bug coding: perbaiki teknis cepat, sukses = jalan. Masalah riset: gap ilmu, batas falsifiable, sukses = bukti valid walau H0 benar. Riset perlu cek kualitas (jelas/ukur), engineering fokus fungsi.
