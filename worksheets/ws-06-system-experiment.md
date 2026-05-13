@@ -80,25 +80,31 @@ Jika variabel tidak bisa di-map ke komponen apapun → arsitektur perlu didesain
 ```
 SYSTEM-EXPERIMENT MAPPING
 
-Research Question: ____________________
+Research Question: Apakah Express.js menghasilkan Response Time, Throughput, dan Resource Usage yang signifikan berbeda dari Laravel pada REST API CRUD kompleks dengan 100K rows database dan 100 concurrent users?
 
 Variable → Component Mapping:
 | Variabel | Tipe | Komponen Sistem | Cara Manipulasi/Pengukuran |
 |----------|------|-----------------|---------------------------|
-|          | IV   |                 |                           |
-|          | DV   |                 |                           |
-|          | CV   |                 |                           |
+| Framework backend | IV | Framework Abstraction Layer | Ganti config `framework: laravel` atau `framework: express` tanpa mengubah endpoint |
+| Response Time | DV | Metrics Collector Module | k6 mengukur response time per request dan mengekspor percentiles |
+| Throughput | DV | Metrics Collector Module | k6 menghitung request sukses per detik selama load test |
+| Error Rate | DV | Metrics & Monitoring | Log HTTP 4xx/5xx dan request gagal |
+| CPU Usage | DV | System Monitor Module | Monitoring OS selama eksperimen |
+| Memory Usage | DV | System Monitor Module | Monitoring RAM / RSS selama eksperimen |
+| Database size | CV | Database Seeding Module | Seed MySQL dengan 100K rows yang identik |
+| Load profile | CV | k6 Load Test Script | Parameter concurrency dan ramp-up dikunci di config |
+| Query complexity | CV | API Endpoint Specification | Endpoint dan query path disamakan pada kedua framework |
 
 4 Prinsip Desain:
-  [ ] Traceability — Setiap komponen bisa ditelusuri ke variabel
-  [ ] Variable Isolation — IV bisa diubah tanpa mengubah CV
-  [ ] Measurement Integration — Pengukuran DV built-in
-  [ ] Reproducibility — Setup bisa direkonstruksi
+  [x] Traceability — Setiap komponen bisa ditelusuri ke variabel
+  [x] Variable Isolation — IV bisa diubah tanpa mengubah CV
+  [x] Measurement Integration — Pengukuran DV built-in
+  [x] Reproducibility — Setup bisa direkonstruksi
 
 Experimental Setup:
-  Input data     : ____________________
-  Parameter      : ____________________
-  Output format  : ____________________
+  Input data     : MySQL database 100K rows, 5 tables, schema dan seed identik
+  Parameter      : 100 concurrent users, ramp-up 30 detik, query kompleks dengan join dan pagination
+  Output format  : JSON/CSV hasil k6, log CPU/RAM, dan slow query log
 ```
 
 ---
