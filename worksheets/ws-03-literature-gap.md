@@ -77,39 +77,44 @@ Membandingkan deep learning 2024 dengan decision tree sederhana tanpa justifikas
 ```
 LITERATURE MAPPING
 
-Topik      : ____________________
-Database   : ____________________
-Query      : ____________________
-Tahun      : ____________________
-Hasil awal : ____ paper → Screening → ____ paper final
+Topik      : Perbandingan Performa Laravel (PHP) dan Express.js (Node.js) dalam Pengembangan REST API
+Database   : Google Scholar, Scopus, arXiv
+Query      : ("Laravel" OR "PHP") AND ("Express.js" OR "Node.js") AND ("REST API" OR "performance" OR "comparison")
+Tahun      : 2018-2025
+Hasil awal : 5 paper → Screening → 5 paper final
 
 Literature Matrix (concept-centric):
 
 | Study | Tahun | Method | Data | Result | Limitation |
 |-------|-------|--------|------|--------|------------|
-|       |       |        |      |        |            |
+| Rompis & Aji | 2018 | JMeter | Synthetic load test | Node.js fastest (~50ms), PHP balanced | Hanya HTTP GET/POST, belum CRUD lengkap |
+| Siahaan & Wijaya | 2024 | Apache JMeter | Student data access | Laravel 1745.7ms, Express.js lebih cepat | Skenario tunggal, belum multi-operasi |
+| Pratama & Farisi | 2024 | k6.io | Dummy dataset 50 rows | Go > Node.js > PHP | Sample kecil, scalability belum jelas |
+| Mosul et al. | 2024 | k6 | To-Do List API | Node.js throughput lebih tinggi, Laravel stabil di auth | Use-case sederhana, bukan enterprise |
+| Azzahidi et al. | 2025 | k6.io | Multi-framework benchmark | Spring Boot terbaik overall, Laravel + FrankenPHP kompetitif | Fairness komparasi sulit karena framework banyak |
 
 Pola yang ditemukan:
-  Metode dominan     : ____________________
-  Dataset umum       : ____________________
-  Limitasi berulang  : ____________________
+   Metode dominan     : JMeter dan k6 sebagai performance testing tools
+   Dataset umum       : Data dummy kecil, 50 rows hingga skenario sederhana
+   Limitasi berulang  : Skenario CRUD sederhana, data kecil, dan environment tidak seragam
 
 GAP IDENTIFICATION
 
-Gap 1: [Jenis: performance / method / data / context]
-  Deskripsi    : ____________________
-  Bukti        : ____________________
-  Signifikansi : ____________________
+Gap 1: [Jenis: performance]
+   Deskripsi    : Performa Laravel vs Express.js pada load dan data skala enterprise belum jelas
+   Bukti        : Semua studi memakai skenario ringan atau data dummy kecil
+   Signifikansi : Sulit memakai hasil lama untuk memilih framework pada aplikasi produksi
 
-Gap 2: [Jenis: ____]
-  Deskripsi    : ____________________
-  Bukti        : ____________________
-  Signifikansi : ____________________
+Gap 2: [Jenis: data/context]
+   Deskripsi    : Belum ada evaluasi pada database besar dan production-ready requirements seperti authentication, caching, dan pagination
+   Bukti        : Studi yang dibaca dominan hanya menguji CRUD sederhana
+   Signifikansi : Generalisasi ke sistem nyata masih lemah
 
 Baseline Selection:
 | Baseline | Relevansi | Representatif | Source |
 |----------|-----------|---------------|--------|
-|          |           |               |        |
+| Express.js + k6 Load Testing | Task identik: REST API performance evaluation | Common practice di studi terbaru | Siahaan & Wijaya, 2024; Mosul et al., 2024 |
+| Laravel + k6/JMeter Testing | Framework PHP paling matang untuk web API | Mewakili praktik industri PHP | Siahaan & Wijaya, 2024; Azzahidi et al., 2025 |
 ```
 
 ---
