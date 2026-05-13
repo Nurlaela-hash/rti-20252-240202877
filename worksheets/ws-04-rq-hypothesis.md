@@ -67,34 +67,34 @@ Jika rantai ini tidak lengkap, RQ belum mature. Bi-directional: RQ yang tidak bi
 ```
 RQ-CONTRIBUTION-HYPOTHESIS
 
-Gap Statement  : ____________________
+Gap Statement  : Performa Laravel vs Express.js pada REST API dengan transactional complexity tinggi, realistic database scale, dan production-ready requirements masih belum diteliti secara komprehensif.
 
 Research Question:
-  Tipe         : [ ] Comparison  [ ] Improvement  [ ] Exploratory
-  Formulasi    : ____________________
-  Variabel IV  : ____________________
-  Variabel DV  : ____________________
-  Metrik       : ____________________
-  Dataset      : ____________________
-  Baseline     : ____________________
+  Tipe         : [x] Comparison  [ ] Improvement  [ ] Exploratory
+  Formulasi    : Apakah Express.js menghasilkan Response Time, Throughput, dan Resource Usage yang signifikan berbeda dari Laravel pada REST API CRUD kompleks dengan database 100K+ rows dan 100 concurrent users?
+  Variabel IV  : Framework backend (Laravel vs Express.js)
+  Variabel DV  : Response Time, Throughput, Error Rate, CPU Usage, Memory Usage
+  Metrik       : Median RT, p95 RT, RPS, error rate, CPU %, memory MB
+  Dataset      : MySQL 100K+ rows, 5 tables, CRUD kompleks dengan join dan pagination
+  Baseline     : Laravel 11 + Eloquent vs Express.js 4.x + Sequelize
 
 Quality Check RQ:
-  [ ] Variabel spesifik
-  [ ] Metrik jelas
-  [ ] Baseline ada
-  [ ] Konteks disebutkan
-  [ ] Memerlukan eksperimen (bukan hanya survei literatur)
+  [x] Variabel spesifik
+  [x] Metrik jelas
+  [x] Baseline ada
+  [x] Konteks disebutkan
+  [x] Memerlukan eksperimen (bukan hanya survei literatur)
 
 Contribution Statement:
-  Apa yang baru diketahui : ____________________
-  Jenis kontribusi        : [ ] Improvement  [ ] Comparison  [ ] Novel approach
-  Gap yang diisi          : ____________________
+  Apa yang baru diketahui : Perbandingan sistematis pada skala realistis dengan transactional complexity dan production-ready requirements
+  Jenis kontribusi        : [ ] Improvement  [x] Comparison  [ ] Novel approach
+  Gap yang diisi          : Performance gap, data gap, dan context gap pada studi Laravel vs Express.js sebelumnya
 
 Hypothesis Pair:
-  H₀ : ____________________
-  H₁ : ____________________
-  Threshold              : ____________________
-  Justifikasi threshold  : ____________________
+  H₀ : Tidak ada perbedaan signifikan pada Response Time, Throughput, atau Resource Usage antara Express.js dan Laravel
+  H₁ : Ada perbedaan signifikan minimal pada satu metrik antara Express.js dan Laravel
+  Threshold              : p-value < 0.05 dan/atau perbedaan praktis ≥15% pada metrik utama
+  Justifikasi threshold  : 0.05 adalah standar statistik akademik; 15% dianggap perbedaan praktis yang bermakna untuk user experience
 ```
 
 ---
