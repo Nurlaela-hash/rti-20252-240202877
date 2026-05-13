@@ -68,36 +68,36 @@ Ancaman validitas harus diidentifikasi **sebelum** eksperimen dan mitigasinya di
 ```
 EXPERIMENT DESIGN
 
-Research Question : ____________________
-Hypothesis        : ____________________
-Tipe Eksperimen   : [ ] Comparison  [ ] Ablation  [ ] Parameter
+Research Question : Apakah Express.js menghasilkan Response Time, Throughput, dan Resource Usage yang signifikan berbeda dari Laravel pada REST API CRUD kompleks dengan 100K rows database dan 100 concurrent users?
+Hypothesis        : Ada perbedaan signifikan pada minimal satu metrik performa antara Express.js dan Laravel.
+Tipe Eksperimen   : [x] Comparison  [ ] Ablation  [ ] Parameter
 
 Kondisi Eksperimen:
 | Kondisi | Deskripsi | IV Value | CV Settings |
 |---------|-----------|----------|-------------|
-| Control |           |          |             |
-| Treatment |         |          |             |
+| Control | Laravel REST API dengan Eloquent ORM | Laravel 11 + PHP 8.2 | MySQL 5.7, 100K rows, 100 VU, ramp-up 30 detik, query kompleks identik |
+| Treatment | Express.js REST API dengan Sequelize ORM | Express.js 4.x + Node.js 18 | MySQL 5.7, 100K rows, 100 VU, ramp-up 30 detik, query kompleks identik |
 
 Fairness Checklist:
-  [ ] Dataset identik untuk semua kondisi
-  [ ] Preprocessing setara
-  [ ] Tuning effort setara
-  [ ] Environment identik
-  [ ] Metrik evaluasi sama
+  [x] Dataset identik untuk semua kondisi
+  [x] Preprocessing setara
+  [x] Tuning effort setara
+  [x] Environment identik
+  [x] Metrik evaluasi sama
 
 Threat Analysis:
 | Threat Type | Ancaman Spesifik | Mitigasi |
 |-------------|-----------------|----------|
-| Internal    |                 |          |
-| External    |                 |          |
-| Construct   |                 |          |
-| Conclusion  |                 |          |
+| Internal    | Framework version creep atau warmup effect | Freeze version, pakai Docker, dan lakukan warmup sebelum pengukuran |
+| External    | Hasil mungkin tidak generalizable ke dataset jauh lebih besar atau traffic spike | Tegaskan scope 100K rows dan 100 VU, lalu sarankan replikasi pada skala lain |
+| Construct   | Response time atau throughput diukur tidak sesuai definisi | Definisikan metrik secara operasional dan gunakan alat yang sama di semua kondisi |
+| Conclusion  | Sample size atau uji statistik tidak memadai | Gunakan beberapa run, uji non-parametrik, dan effect size |
 
 Statistical Plan:
-  Uji statistik   : ____________________
-  Justifikasi      : ____________________
-  Alpha            : ____________________
-  Effect size min  : ____________________
+  Uji statistik   : Mann-Whitney U Test dua arah
+  Justifikasi      : Cocok untuk distribusi latency yang cenderung tidak normal dan robust terhadap outlier
+  Alpha            : 0.05
+  Effect size min  : Perbedaan praktis minimal 15% pada response time atau throughput
 ```
 
 ---
