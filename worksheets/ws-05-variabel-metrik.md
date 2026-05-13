@@ -66,19 +66,26 @@ Metrik harus ditentukan **sebelum** eksperimen. Memilih metrik setelah melihat d
 ```
 VARIABLE & METRIC DEFINITION
 
-Research Question: ____________________
+Research Question: Apakah Express.js menghasilkan Response Time, Throughput, dan Resource Usage yang signifikan berbeda dari Laravel pada REST API CRUD kompleks dengan 100K rows database dan 100 concurrent users?
 
 | Variabel | Tipe | Konsep | Metrik | Skala | Satuan | Cara Mengukur | Justifikasi |
 |----------|------|--------|--------|-------|--------|---------------|-------------|
-|          | IV   |        |        |       |        |               |             |
-|          | DV   |        |        |       |        |               |             |
-|          | CV   |        |        |       |        |               |             |
+| Framework backend | IV | Pilihan runtime dan framework server-side | Laravel 11 vs Express.js 4.x | Nominal | - | Implementasi dua aplikasi dengan endpoint identik | Variabel utama yang hendak dibandingkan |
+| Response Time (median) | DV | Kecepatan server merespons request | Median response time | Ratio | ms | Diukur dari output k6 per request | Mewakili pengalaman pengguna tipikal |
+| Response Time (p95) | DV | Tail latency | Persentil ke-95 response time | Ratio | ms | Diukur dari output k6 | Menangkap kasus terburuk yang masih umum |
+| Throughput | DV | Kapasitas melayani request | Successful requests per second | Ratio | req/sec | Total request sukses dibagi durasi tes | Mewakili skala dan kapasitas sistem |
+| Error Rate | DV | Reliabilitas eksekusi request | Persentase request gagal | Ratio | % | Rasio request gagal terhadap total request | Memastikan performa tinggi tidak dibayar dengan error |
+| CPU Usage | DV | Efisiensi pemakaian CPU | Rata-rata utilisasi CPU | Ratio | % | Monitoring OS selama eksperimen | Menunjukkan cost infra |
+| Memory Usage | DV | Efisiensi pemakaian memori | Peak RSS / RAM usage | Ratio | MB | Monitoring OS selama eksperimen | Menunjukkan kebutuhan resource |
+| Database size | CV | Ukuran data yang diproses | 100,000 rows pada 5 tabel | Ratio | rows | Dataset disiapkan dengan seeding identik | Menjaga skala data tetap sama |
+| Load profile | CV | Karakteristik traffic | 100 concurrent users, ramp-up 30 detik | Nominal | - | Skrip k6 identik untuk kedua framework | Menjaga beban tes fair |
+| Query complexity | CV | Kompleksitas business logic | Multi-join, filter, pagination | Nominal | - | Endpoint dan skema query identik | Mengisolasi pengaruh framework |
 
 Alignment Check:
   RQ → Concept → Variable → Metric → Data → Result
-  [ ] Setiap langkah terdokumentasi
-  [ ] Tidak ada "lompatan logis"
-  [ ] Metrik mengukur apa yang dimaksud (construct validity)
+  [x] Setiap langkah terdokumentasi
+  [x] Tidak ada "lompatan logis"
+  [x] Metrik mengukur apa yang dimaksud (construct validity)
 ```
 
 ---
