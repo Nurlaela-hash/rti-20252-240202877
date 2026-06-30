@@ -73,32 +73,33 @@ Mengandalkan "install library terbaru" berbahaya: versi berbeda = perilaku berbe
 EXPERIMENT SETUP DOCUMENTATION
 
 Hardware:
-  CPU     : ____________________
-  RAM     : ____________________
-  GPU     : ____________________
-  Storage : ____________________
+  CPU     : Intel Core i5-12400F (6 Cores, 12 Threads)
+  RAM     : 16 GB DDR4 Dual-Channel
+  GPU     : NVIDIA GeForce RTX 3060 12GB GDDR6
+  Storage : SSD NVMe PCIe Gen 4.0 512GB
 
 Software:
-  OS        : ____________________
-  Runtime   : ____________________
-  Framework : ____________________
+  OS        : Windows 11 Home (Host) / Alpine Linux 3.19 (Docker Containers)
+  Runtime   : Node.js 20.18-alpine / PHP 8.4-cli-alpine / MySQL 5.7
+  Framework : Express.js 4.21.2 / Laravel 11.31.0
 
 Dependencies:
 | Library | Version | Sumber | Hash/Checksum |
 |---------|---------|--------|---------------|
-|         |         |        |               |
-|         |         |        |               |
+| mysql2 | 3.11.5 | npm | (dari package-lock.json) |
+| dotenv | 16.4.7 | npm | (dari package-lock.json) |
+| laravel/framework | 11.31.0 | composer | (dari composer.lock) |
 
 Konfigurasi:
-  Config file     : ____________________
-  Random seed     : ____________________
-  Hyperparameters : ____________________
+  Config file     : docker-compose.yml, service-laravel/.env, service-express/.env
+  Random seed     : Seed = 42 (untuk generator data dummy database)
+  Hyperparameters : cpus: '1.0' & memory: 512M (untuk application containers), cpus: '2.0' & memory: 1024M (untuk MySQL container)
 
 Reproducibility Check:
-  [ ] Dependency terdokumentasi (requirements.txt / lock file)
-  [ ] Seed ditetapkan di semua level (Python, NumPy, framework)
-  [ ] Config di version control
-  [ ] README instruksi reproduksi lengkap
+  [x] Dependency terdokumentasi (requirements.txt / lock file)
+  [x] Seed ditetapkan di semua level (Python, NumPy, framework)
+  [x] Config di version control
+  [x] README instruksi reproduksi lengkap
 ```
 
 ---
@@ -109,23 +110,25 @@ Dokumentasikan environment untuk eksperimen Anda (boleh environment saat ini ata
 
 | Komponen | Spesifikasi |
 |----------|------------|
-| CPU | *Contoh: Intel Core i7-12700H, 14 Core* |
-| RAM | *Contoh: 32 GB DDR5* |
-| GPU | *Contoh: NVIDIA RTX 3060 6GB / CPU-only jika tidak ada GPU* |
-| OS | *Contoh: Ubuntu 22.04 LTS / Windows 11* |
-| Runtime | |
-| Framework | |
-| Random Seed | |
+| CPU | Intel Core i5-12400F (Host) / Docker cap: 1.0 CPU (backends), 2.0 CPU (MySQL) |
+| RAM | 16 GB DDR4/DDR5 (Host) / Docker cap: 512MB (backends), 1024MB (MySQL) |
+| GPU | NVIDIA GeForce RTX 3060 12GB |
+| OS | Windows 11 / Docker (Alpine Linux) |
+| Runtime | Node.js 20-alpine & PHP 8.4-cli-alpine (platform: linux/amd64) |
+| Framework | Express.js 4.21.2 & Laravel 11.31+ |
+| Random Seed | 42 |
+
 
 **Dependencies (minimal 5):**
 
 | Library | Version | Alasan Dibutuhkan |
 |---------|---------|-------------------|
-| *Contoh: scikit-learn* | *1.3.2* | *Klasifikasi + evaluasi metrik* |
-| | | |
-| | | |
-| | | |
-| | | |
+| *laravel/framework* | *^11.31* | *Framework backend Laravel untuk REST API CRUD* |
+| *express* | *^4.21.2* | *Framework backend Express.js untuk REST API CRUD* |
+| *mysql2* | *^3.11.4* | *Driver MySQL untuk Express dan script seed* |
+| *dotenv* | *^16.4.5* | *Membaca konfigurasi environment (.env)* |
+| *k6 (Docker)* | *0.54.0* | *Instansi load testing untuk performa benchmark* |
+
 
 ---
 
@@ -135,25 +138,19 @@ Rancang tes repeatability sederhana: jalankan kode yang sama 3× di environment 
 
 | Run | Seed | Metrik Utama | Hasil Sama? |
 |-----|------|-------------|-------------|
-| 1 | *Contoh: 42* | *Contoh: Accuracy* | — |
-| 2 | | | [ ] Ya / [ ] Tidak |
-| 3 | | | [ ] Ya / [ ] Tidak |
+| 1 | 42 | Throughput (req/sec) | — |
+| 2 | 42 | Throughput (req/sec) | [x] Ya / [ ] Tidak |
+| 3 | 42 | Throughput (req/sec) | [x] Ya / [ ] Tidak |
 
 **Jika hasil berbeda, kemungkinan penyebab:**
 
-> Penyebab umum non-repeatability:
-> - **Thermal throttling** — CPU/GPU overheating pada run berturut-turut → clock speed turun → waktu eksekusi berubah
-> - **Background process** — antivirus scan, update OS, atau cloud sync aktif saat run berlangsung
-> - **Cache dari run sebelumnya** — hasil tersimpan di memori/disk sehingga run berikutnya tidak menjalankan komputasi penuh
-> - **Random state tidak dikontrol di semua level** — Python seed di-set, tapi NumPy/PyTorch/TensorFlow punya seed independen
-
-___________________________________________________
+Thermal throttling pada CPU, pengaruh background process dari sistem operasi Windows host, serta ketidakstabilan IOPS disk database MySQL pada volume Docker.
 
 **Checklist kontrol yang sudah diterapkan:**
-- [ ] Random seed di-set di semua level
-- [ ] Tidak ada background process yang mengganggu
-- [ ] Cache dibersihkan antar-run
-- [ ] Config file yang sama untuk semua run
+- [x] Random seed di-set di semua level
+- [x] Tidak ada background process yang mengganggu (antivirus dinonaktifkan sementara/host dalam keadaan idle)
+- [x] Cache dibersihkan antar-run (menggunakan restart container database)
+- [x] Config file yang sama untuk semua run
 
 ---
 
@@ -161,26 +158,47 @@ ___________________________________________________
 
 Tulis README minimum untuk eksperimen Anda (6 komponen wajib).
 
-```
-# Judul Eksperimen: ____________________
+```markdown
+# Judul Eksperimen: Perbandingan Performa REST API CRUD Laravel vs Express.js
 
 ## 1. Environment
-> (Salin spesifikasi dari Latihan 1)
+- CPU (Host): Intel Core i5-12400F
+- CPU (Docker Cap): 1.0 core (Express/Laravel), 2.0 cores (MySQL)
+- RAM (Host): 16 GB DDR4/DDR5
+- RAM (Docker Cap): 512MB (Express/Laravel), 1024MB (MySQL)
+- Platform: linux/amd64
+- OS: Windows 11 / Docker (Alpine Linux)
+- Runtime: Node.js 20-alpine & PHP 8.4-cli-alpine
+- Framework: Express.js 4.21.2 & Laravel 11.31+
+- Random Seed: 42
 
 ## 2. Installation
-> (Langkah instalasi, misal: "pip install -r requirements.txt")
+Build seluruh container dengan:
+$ docker compose build
 
 ## 3. Data
-> (Deskripsi data: sumber, format, ukuran)
+Database MySQL 5.7 dengan 5 tabel relasional (categories, brands, products, inventory, reviews). Volume data produk sebesar 100K baris yang digenerate secara deterministik dengan seed 42.
 
 ## 4. Execution
-> (Command untuk menjalankan eksperimen)
+1. Nyalakan backend & database:
+   $ docker compose up -d
+2. Seed data:
+   $ docker compose run --rm db-seed
+3. Jalankan load testing:
+   Express:
+   $ docker compose run --rm -e K6_BASE_URL=http://express:3000 -e TARGET_FRAMEWORK=express k6
+   Laravel:
+   $ docker compose run --rm -e K6_BASE_URL=http://laravel:8000 -e TARGET_FRAMEWORK=laravel k6
 
 ## 5. Configuration
-> (File config yang digunakan + parameter kunci)
+Dikonfigurasi melalui file `.env` di root directory. Parameter utama meliputi:
+- `TOTAL_PRODUCTS=100000`
+- `SEED=42`
+- `CONCURRENT_USERS=100`
+- `SUSTAIN_SECONDS=120`
 
 ## 6. Expected Output
-> (Contoh output yang diharapkan + format)
+Log keluaran k6 yang menampilkan total HTTP requests, HTTP throughput (req/s), HTTP request duration (min, avg, med, p(95), p(99)), dan success rate (>95%).
 ```
 
 ---
@@ -189,6 +207,7 @@ Tulis README minimum untuk eksperimen Anda (6 komponen wajib).
 
 > Apakah eksperimen Anda saat ini bisa direproduksi oleh orang lain tanpa bantuan Anda? Komponen apa yang masih hilang?
 
-**Level saat ini:** [ ] Repeatability / [ ] Reproducibility / [ ] Belum keduanya
+**Level saat ini:** [ ] Repeatability / [x] Reproducibility / [ ] Belum keduanya
 **Komponen yang belum terdokumentasi:**
-> ___________________________________________________
+Semua komponen penting, termasuk dependensi terkunci, skema database, seed generator, container environment, dan perintah eksekusi run k6 telah terdokumentasi sepenuhnya pada berkas README.md dan file ini.
+
