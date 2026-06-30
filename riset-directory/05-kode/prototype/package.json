@@ -1,0 +1,15 @@
+{
+  "name": "prototype-laravel-vs-express-benchmark",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "seed": "node scripts/seed-database.js",
+    "benchmark": "k6 run benchmark/k6/complex-crud.js",
+    "benchmark:express": "K6_BASE_URL=http://localhost:3000 TARGET_FRAMEWORK=express k6 run benchmark/k6/complex-crud.js",
+    "benchmark:php": "K6_BASE_URL=http://localhost:8000 TARGET_FRAMEWORK=laravel k6 run benchmark/k6/complex-crud.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.11.4"
+  }
+}
