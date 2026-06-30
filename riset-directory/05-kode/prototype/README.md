@@ -84,8 +84,44 @@ Prototype ini digunakan untuk membandingkan performa REST API CRUD kompleks anta
    k6 run benchmark/k6/complex-crud.js
    ```
 
+## Langkah Menjalankan dengan Docker
+
+Jika Anda ingin menjalankan seluruh environment (MySQL, Express, Laravel, Seeding, dan k6) menggunakan Docker, ikuti langkah-langkah berikut:
+
+1. **Jalankan Docker Desktop / Docker daemon** di mesin Anda.
+2. **Build dan Jalankan Container Backend & Database**:
+   ```bash
+   docker compose up -d
+   ```
+   Perintah ini akan menyalakan container `mysql` (port 3306), `express` (port 3000), dan `laravel` (port 8000).
+
+3. **Generate & Seed Data**:
+   Untuk mengisi database dengan 100K produk secara deterministik menggunakan container:
+   ```bash
+   docker compose run --rm db-seed
+   ```
+   *Catatan: Proses ini memerlukan waktu beberapa saat karena melakukan seeding data ke database MySQL.*
+
+4. **Jalankan Benchmark k6**:
+   Anda dapat menjalankan load test langsung dari dalam container Docker menggunakan service `k6`:
+   
+   - **Untuk Express.js**:
+     ```bash
+     docker compose run --rm -e K6_BASE_URL=http://express:3000 -e TARGET_FRAMEWORK=express k6
+     ```
+   - **Untuk Laravel**:
+     ```bash
+     docker compose run --rm -e K6_BASE_URL=http://laravel:8000 -e TARGET_FRAMEWORK=laravel k6
+     ```
+
+   *Anda juga dapat menyesuaikan parameter benchmark lewat environment variables, contoh:*
+   ```bash
+   docker compose run --rm -e K6_BASE_URL=http://laravel:8000 -e TARGET_FRAMEWORK=laravel -e WARMUP_SECONDS=30 -e CONCURRENT_USERS=20 k6
+   ```
+
 ## Catatan Penting
 
 - Dataset dibuat deterministik dengan seed agar hasil bisa diulang.
 - Query list produk memakai join ke kategori, brand, inventory, dan agregasi review.
-- Prototype ini dirancang untuk eksekusi lokal dan tidak lagi menggunakan Docker.
+- Prototype ini mendukung eksekusi lokal secara langsung maupun menggunakan Docker Compose.
+

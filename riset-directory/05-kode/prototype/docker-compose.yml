@@ -1,46 +1,101 @@
 services:
   mysql:
-    image: mysql:5.7
+    image: mysql:5.7.44
+    platform: linux/amd64
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: benchmark
+      MYSQL_PASSWORD: benchmark
       MYSQL_DATABASE: benchmark_rti
     ports:
       - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1024M
 
   express:
     build:
       context: ./service-express
+    platform: linux/amd64
     depends_on:
       - mysql
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_USER: benchmark
+      DB_PASSWORD: benchmark
       DB_NAME: benchmark_rti
       APP_PORT: 3000
     ports:
       - "3000:3000"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
 
   laravel:
     build:
       context: ./service-laravel
+    platform: linux/amd64
+    depends_on:
+      - mysql
+    environment:
+      APP_NAME: Laravel
+      APP_ENV: local
+      APP_KEY: base64:tExTNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTI=
+      APP_DEBUG: "true"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: benchmark_rti
+      DB_USERNAME: benchmark
+      DB_PASSWORD: benchmark
+      APP_PORT: 8000
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  db-seed:
+    image: node:20-alpine
+    platform: linux/amd64
+    volumes:
+      - .:/app
+    working_dir: /app
     depends_on:
       - mysql
     environment:
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_USERNAME: root
-      DB_PASSWORD: root
-      DB_DATABASE: benchmark_rti
-      APP_PORT: 8000
-    ports:
-      - "8000:8000"
+      DB_USER: benchmark
+      DB_PASSWORD: benchmark
+      DB_NAME: benchmark_rti
+    command: sh -c "npm install && npm run seed"
+
+  k6:
+    image: grafana/k6:0.54.0
+    platform: linux/amd64
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      K6_BASE_URL: http://express:3000
+      TARGET_FRAMEWORK: express
+    command: run benchmark/k6/complex-crud.js
 
 volumes:
   mysql_data:
