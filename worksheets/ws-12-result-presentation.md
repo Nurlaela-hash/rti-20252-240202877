@@ -65,25 +65,26 @@ Keduanya **saling melengkapi**:
 ```
 RESULT PRESENTATION PLAN
 
-Research Question : ____________________
-Metrik Utama      : ____________________
+Research Question : Manakah framework yang memiliki performa throughput (RPS) dan latensi lebih baik di bawah saturasi CPU antara Laravel dan Express.js?
+Metrik Utama      : Throughput (RPS) dan Average Latency (ms)
 
 Tabel Hasil:
-| Skenario | Metrik 1 (mean ± std) | Metrik 2 (mean ± std) | n |
+| Skenario | Throughput (mean ± std, req/s) | Avg Latency (mean ± std, ms) | n |
 |----------|----------------------|----------------------|---|
-|          |                      |                      |   |
+| Laravel 11 (PHP 8.4) | 2.72 ± 0.12 | 3350.00 ± 155.31 | 10 |
+| Express.js (Node.js 20) | 2.19 ± 0.09 | 4295.00 ± 181.78 | 10 |
 
 Visualisasi yang Direncanakan:
 | # | Jenis Grafik | Pesan Utama | Metrik |
 |---|-------------|-------------|--------|
-| 1 |             |             |        |
-| 2 |             |             |        |
+| 1 | Bar Chart + error bar | Laravel 11 menghasilkan throughput rata-rata lebih tinggi (+24%) dibanding Express.js | RPS rata-rata ± standar deviasi |
+| 2 | Box Plot | Distribusi tail latency (p95) Laravel 11 jauh lebih rendah dan lebih stabil dibanding Express.js | p95 latency dari seluruh run |
 
 Bias Check:
-  [ ] Y-axis mulai dari 0 (atau dijustifikasi)
-  [ ] Error bar/CI ditampilkan
-  [ ] Semua data disertakan (tidak cherry-picked)
-  [ ] Tidak menggunakan 3D tanpa alasan
+  [x] Y-axis mulai dari 0 (atau dijustifikasi)
+  [x] Error bar/CI ditampilkan
+  [x] Semua data disertakan (tidak cherry-picked)
+  [x] Tidak menggunakan 3D tanpa alasan
 ```
 
 ---
@@ -92,17 +93,17 @@ Bias Check:
 
 Buat tabel hasil eksperimen Anda (boleh dengan data simulasi jika belum punya data riil).
 
-| Skenario | Metrik 1 (mean ± std) | Metrik 2 (mean ± std) | n |
+| Skenario | Throughput (mean ± std, req/s) | Avg Latency (mean ± std, ms) | n |
 |----------|----------------------|----------------------|---|
-| *Contoh: BERT-base* | *88.4 ± 1.2%* | *45.2 ± 3.1 min* | *10* |
-| | | | |
-| | | | |
+| Laravel 11 (PHP 8.4) | 2.72 ± 0.12 | 3350.00 ± 155.31 | 10 |
+| Express.js (Node.js 20) | 2.19 ± 0.09 | 4295.00 ± 181.78 | 10 |
 
 **Checklist tabel:**
-- [ ] Self-contained (judul jelas, satuan ada, N tercantum)
-- [ ] Mean ± std (bukan single number)
-- [ ] Diurutkan berdasarkan metrik utama
-- [ ] Format konsisten di semua baris
+- [x] Self-contained (judul jelas, satuan ada, N tercantum)
+- [x] Mean ± std (bukan single number)
+- [x] Diurutkan berdasarkan metrik utama (Throughput)
+- [x] Format konsisten di semua baris
+
 
 ---
 
@@ -112,9 +113,10 @@ Rencanakan 2-3 grafik untuk menyajikan data dari Latihan 1. Setiap grafik = satu
 
 | # | Jenis Grafik | Pesan | Data yang Digunakan |
 |---|-------------|-------|---------------------|
-| 1 | *Contoh: Bar chart + error bar* | *Perbandingan accuracy antar 3 model* | *Mean accuracy ± std* |
-| 2 | *Box plot* | *Distribusi F1 per model* | *Semua run F1* |
-| 3 | *Scatter plot* | *Trade-off accuracy vs training time* | *Mean accuracy vs mean time* |
+| 1 | Bar chart + error bar | Perbandingan throughput (RPS) rata-rata antara Express.js dan Laravel | Mean throughput (req/s) ± std |
+| 2 | Box plot | Perbandingan persebaran tail latency (p95) antara kedua framework | p95 latency (ms) dari seluruh 20 run |
+| 3 | Scatter plot | Pola korelasi / trade-off antara Throughput vs Average Response Time | Mean throughput vs Mean latency per run |
+
 
 ---
 
@@ -126,14 +128,15 @@ Evaluasi visualisasi berikut untuk bias (skenario dari contoh):
 
 | Pertanyaan | Jawaban |
 |-----------|---------|
-| Apakah Y-axis menyesatkan? | *Contoh: Ya — A terlihat 2× B padahal beda 0.4%* |
-| Apakah error bar ditampilkan? | |
-| Apakah semua kondisi ditampilkan? | |
-| Apa solusinya? | |
+| Apakah Y-axis menyesatkan? | Ya — Metode A terlihat seolah-olah memiliki performa dua kali lipat lebih baik daripada Metode B, padahal perbedaan riilnya hanya 0.4%. |
+| Apakah error bar ditampilkan? | Tidak — Ini menyembunyikan variabilitas data sehingga perbedaan kecil tersebut nampak pasti dan signifikan padahal bisa jadi hanyalah noise. |
+| Apakah semua kondisi ditampilkan? | Ya — Semua kondisi (Metode A dan Metode B) ditunjukkan. |
+| Apa solusinya? | Mengatur Y-axis dimulai dari nilai 0% agar proporsional, serta menambahkan error bar (standar deviasi) untuk visualisasi yang jujur. |
 
 **Evaluasi grafik Anda sendiri dari Latihan 2:**
-- [ ] Semua bias check lulus
-- [ ] Ada yang perlu diperbaiki: ____
+- [x] Semua bias check lulus
+- [x] Ada yang perlu diperbaiki: Tidak ada, sumbu Y pada seluruh chart (RPS & Latensi) dipastikan mulai dari 0 dan dilengkapi error bar standar deviasi.
+
 
 ---
 
@@ -141,5 +144,7 @@ Evaluasi visualisasi berikut untuk bias (skenario dari contoh):
 
 > Mengapa tabel dan grafik keduanya diperlukan — tidak cukup salah satu saja? Pernahkah Anda membuat grafik yang (tanpa sengaja) menyesatkan?
 
-> ___________________________________________________
-> ___________________________________________________
+Tabel dan grafik saling melengkapi karena melayani fungsi kognitif yang berbeda. Tabel memberikan ketepatan angka presisi hingga ke detail desimal untuk kebutuhan analisis mendalam dan audit data. Sementara grafik memberikan pemahaman makro yang cepat mengenai pola, tren, pencilan, dan perbandingan antar-skenario secara visual.
+
+Ya, saya pernah membuat grafik bar secara otomatis menggunakan library spreadsheet yang memotong sumbu Y di atas angka 0 secara otomatis. Hal tersebut membuat perbedaan performa yang sebenarnya sangat kecil dan tidak signifikan secara praktis nampak sangat dramatis, yang tanpa sengaja dapat menggiring audiens ke kesimpulan yang bias.
+
