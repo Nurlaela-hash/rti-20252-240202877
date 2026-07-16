@@ -76,7 +76,9 @@ def parse_file(file_path):
         return None
 
 def main():
-    logs_dir = r"F:\Nurlaela\rti-20252-240202877\riset-directory\06-output\experiment-logs"
+    # Dynamic path based on script location to support different operating systems
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    logs_dir = os.path.join(script_dir, "experiment-logs")
     
     express_runs = []
     laravel_runs = []

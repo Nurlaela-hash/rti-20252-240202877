@@ -52,7 +52,7 @@ Riset dilaksanakan dalam 5 tahap sekuensial:
 
 ### 3.4 Tahap 4 — Ekstraksi Data & Analisis Hasil
 * **Status: Selesai.** [Detail Tahap 4](../09-docs/tahap-4-analisis-data.md)
-* **Aktivitas**: Menyusun program python parser `parse_results.py` untuk mengolah file log k6 biner UTF-16, mengekstrak nilai mean dan std deviasi untuk RPS serta latensi (avg, med, p95).
+* **Aktivitas**: Menyusun program python parser `parse_results.py` untuk memproses data mentah (decoding UTF-16, pembersihan noise, standardisasi unit waktu ke ms, dan keputusan untuk tidak menormalisasi skala) dan mengekstrak nilai statistik deskriptif (mean dan std dev) untuk RPS serta latensi (avg, med, p95).
 
 ### 3.5 Tahap 5 — Laporan Akhir & Evaluasi
 * **Status: Selesai.** [Detail Tahap 5](../09-docs/tahap-5-draf-paper.md)
@@ -70,9 +70,15 @@ Riset dilaksanakan dalam 5 tahap sekuensial:
 | **p95 Latency** | 9825.00 ± 373.56 ms | **5832.00 ± 365.45 ms** | -40.64% (Laravel Unggul) |
 | **Error Rate** | **0.00 ± 0.00%** | 0.05 ± 0.15% | - |
 
-**Analisis Kausalitas Beban:**
+### 4.1 Analisis Kausalitas Beban
 1. **Model Concurrency**: PHP 8.4 dengan 4 CLI workers menggunakan forking proses OS untuk menangani konkurensi. Saat kueri database memblokir I/O, OS scheduler dapat menukar proses yang terblokir dengan worker lain. Sementara itu, Express.js (single event loop) menampung seluruh callback asinkron dalam satu utas. Di bawah pembebanan CPU 100%, overhead manajemen callback asinkron Node.js dan konkurensi tinggi menyebabkan latensi antrean internal melonjak lebih tajam.
 2. **Kinerja p95 Latency**: Persentil ke-95 Express.js sangat buruk (9825.00 ms) dibandingkan Laravel (5832.00 ms). Ini adalah efek *head-of-line blocking* di mana request yang datang belakangan terhambat oleh proses I/O kompleks di depan utas tunggal Node.js yang sudah mengalami saturasi CPU.
+
+### 4.2 Signifikansi Statistik (Uji Hipotesis)
+Untuk memverifikasi secara ilmiah kekuatan temuan di atas, dilakukan pengujian signifikansi statistik (Welch's t-test & Mann-Whitney U, $n=10$ per framework):
+* **Throughput (RPS)**: Uji non-parametrik Mann-Whitney U membuktikan keunggulan Laravel 11 sangat signifikan ($p = 0.00018 < 0.001$) dengan ukuran efek Cohen's $d = -4.87$ (*large effect*) dan 95% CI selisih $[0.43, 0.64]$ RPS.
+* **Average Latency (ms)**: Uji Mann-Whitney U mengonfirmasi keunggulan kecepatan respons Laravel 11 sangat signifikan ($p = 0.00018 < 0.001$) dengan Cohen's $d = 5.30$ (*large effect*) dan 95% CI selisih $[777.27, 1112.73]$ ms.
+* **p95 Tail Latency (ms)**: Uji Welch's t-test menunjukkan stabilitas tail latency Laravel 11 signifikan secara ekstrem ($t = 22.92$, $p = 9.13 \times 10^{-15} < 0.001$) dengan Cohen's $d = 10.25$ (*extreme effect*) dan 95% CI selisih $[3627.01, 4358.99]$ ms.
 
 ---
 
